@@ -3,6 +3,7 @@ package vocabularyup.ui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import vocabularyup.VocabularyApp;
 import vocabularyup.VocabularyAppAdapter;
@@ -31,13 +32,14 @@ public class ArticlesView extends JTable {
         }
     }
 
-    public static class ArticlesViewModel extends AbstractTableModel {
+    private class ArticlesViewModel extends AbstractTableModel {
         private List<ArticleView> searchResults = new ArrayList<ArticleView>();
 
         public ArticlesViewModel() {
             VocabularyApp.getInstance().addListener(new VocabularyAppAdapter(){
                 @Override
                 public void currentArticlesChanges(VocabularyAppEvent event) {
+                    VocabularyApp.getInstance().setSelectedArticle(null);
                     setSearchResults(event.getArticles());
                 }
             });

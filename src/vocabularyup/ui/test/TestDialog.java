@@ -1,5 +1,6 @@
 package vocabularyup.ui.test;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
@@ -19,17 +21,23 @@ import javax.swing.SwingWorker;
 public class TestDialog extends JDialog {
 
     private class TimerTask extends SwingWorker implements ActionListener {
+        private volatile boolean buttonClicked = false;
+
         @Override
         protected Object doInBackground() throws Exception {
-            for (int i = 20; i > 0; i--) { //countdown
-                //TODO: set time
+            for (int i = 20; i > 0 && !buttonClicked; i--) { //countdown
+                timeLabel.setText("00:" + (i < 10 ? "0" : "") + i);
+                Thread.sleep(1000);
             }
-            setNextWord();
+
+            if (!buttonClicked) {
+                setNextWord();
+            }
             return null;
         }
 
         public void actionPerformed(ActionEvent e) {
-            //TODO: stop processing
+            buttonClicked = true;
         }
     }
 
@@ -48,17 +56,23 @@ public class TestDialog extends JDialog {
     private JPanel mainPanel;
     private int currentStep;
     private JButton nextButton;
+    private JLabel timeLabel;
 
     public TestDialog(TestController controller) {
         this.controller = controller;
         this.currentStep = 0;
         this.mainPanel = new JPanel();
+        this.timeLabel = new JLabel();
         nextButton = new JButton(new NextAction());
         initUI();
     }
 
     protected void initUI() {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        JPanel timePanel = new JPanel(new BorderLayout());
+        timePanel.add(timeLabel, BorderLayout.EAST);
+        mainPanel.add(timePanel);
 
         mainPanel.add(new CreateTestPanel());
 
@@ -74,9 +88,10 @@ public class TestDialog extends JDialog {
     }
 
     synchronized private void setNextWord() {
-        Component currentComponent = TestDialog.this.mainPanel.getComponent(0);
-        TestDialog.this.mainPanel.remove(currentComponent);
-        TestDialog.this.mainPanel.add(controller.getNext(++currentStep, currentComponent), 0);
+        Component currentComponent = TestDialog.this.mainPanel.getComponent(1);
+        mainPanel.remove(currentComponent);
+        mainPanel.add(controller.getNext(++currentStep, currentComponent), 1);
+        mainPanel.validate();
         TimerTask task = new TimerTask();
         nextButton.addActionListener(task);
         task.execute();

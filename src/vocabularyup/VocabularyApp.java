@@ -3,11 +3,15 @@ package vocabularyup;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import vocabularyup.exception.VocabularyAlreadyExistException;
@@ -36,6 +40,7 @@ public class VocabularyApp {
     private Map<String, Vocabulary> vocabularies = new HashMap<String, Vocabulary>();
     private Vocabulary currentVocabulary;
     private Article selectedArticle;
+    private String  currentFilter = "";
 
     private List<VocabularyAppListener> listeners = new ArrayList<VocabularyAppListener>();
 
@@ -70,6 +75,7 @@ public class VocabularyApp {
         }
         currentVocabulary = voc;
         fireCurrentVocabularyChange(voc);
+        search(currentFilter);
     }
 
     /**
@@ -111,6 +117,9 @@ public class VocabularyApp {
      * @return list of found articles or empty list.
      */
     public List<Article> search(String filter) {
+        currentFilter = filter;
+
+        log.info("Search in [" + currentVocabulary.getName() + "]. Filter: [" + filter +"]");
         List<Article> result = new ArrayList<Article>();
         if (currentVocabulary != null) {
             List<Article> articles = currentVocabulary.getArticles();
@@ -136,6 +145,7 @@ public class VocabularyApp {
      * @param selectedArticle new selected article.
      */
     public void setSelectedArticle(Article selectedArticle) {
+        log.fine("Set current article [" + (selectedArticle == null ? "null" : selectedArticle.getSource()) + "]");
         this.selectedArticle = selectedArticle;
         fireSelectedArticleChange(selectedArticle);
     }    
@@ -235,9 +245,43 @@ public class VocabularyApp {
             dialog.setVisible(true);
         } else {
             mainFrame = new MainFrame();
-            mainFrame.setLocationRelativeTo(null);
+            mainFrame.setLocationByPlatform(true);
             mainFrame.pack();
             mainFrame.setVisible(true);
+        }
+    }
+
+    public static void configureLog() {
+        String LOG_CONFIG_PROPERTY = "java.util.logging.config.file";
+        String DEFAULT_LOG_CONFIG = "conf/logger.properties";
+        String logConfigFile = System.getProperty(LOG_CONFIG_PROPERTY);
+        if (logConfigFile == null) {
+            File defaultLogConfigFile = new File(DEFAULT_LOG_CONFIG);
+            if (defaultLogConfigFile.exists()) {
+                System.setProperty(LOG_CONFIG_PROPERTY, DEFAULT_LOG_CONFIG);
+            } else {
+                log.warning("Load default logging configuration");
+            }
+        }
+        try {
+            LogManager logManager = LogManager.getLogManager();
+            logManager.readConfiguration();
+            System.out.println("Logging configuration:");
+            Enumeration<String> loggers = logManager.getLoggerNames();
+            while (loggers.hasMoreElements()) {
+                String loggerName = loggers.nextElement();
+                Logger logger = logManager.getLogger(loggerName);
+                System.out.println("\t [" + loggerName + "]");
+                System.out.println("\t\tHandlers:");
+                for (Handler h : logger.getHandlers()) {
+                    System.out.println("\t\t\tClass: " + h.getClass().getName());
+                    System.out.println("\t\t\tLevel: " + h.getLevel());
+                    System.out.println("\t\t\tFormatter: " + h.getFormatter().getClass().getName());
+                }
+                System.out.println("\t\tLevel: " + logger.getLevel());
+            }
+        } catch (IOException e) {
+            log.log(Level.SEVERE, "Error loading logging configuration", e);
         }
     }
 
@@ -245,6 +289,7 @@ public class VocabularyApp {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        configureLog();
         VocabularyApp app = VocabularyApp.getInstance();
         app.start(args);
     }

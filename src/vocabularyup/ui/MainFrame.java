@@ -79,6 +79,8 @@ public class MainFrame extends JFrame {
                     return panel;
                 }
             });
+            dialog.setLocationRelativeTo(null);
+            dialog.setLocationByPlatform(true);
             dialog.pack();
             dialog.setVisible(true);
         }
@@ -94,7 +96,6 @@ public class MainFrame extends JFrame {
         setTitle("Extend Your Vocabulary!");
         setPreferredSize(new Dimension(600, 400));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setLocationByPlatform(true);
         createMenu();
         createMainView();
     }

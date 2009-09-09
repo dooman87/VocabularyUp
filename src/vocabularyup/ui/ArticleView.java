@@ -1,5 +1,6 @@
 package vocabularyup.ui;
 
+import java.util.logging.Logger;
 import javax.swing.JTextPane;
 import javax.swing.text.html.HTMLEditorKit;
 import vocabularyup.model.xml.Article;
@@ -9,6 +10,7 @@ import vocabularyup.model.xml.Article;
  * @author dooman
  */
 public class ArticleView extends JTextPane {
+    private static final Logger log = Logger.getLogger(ArticleView.class.getName());
 
     public ArticleView() {
         setEditorKit(new HTMLEditorKit());
@@ -16,6 +18,7 @@ public class ArticleView extends JTextPane {
     }
 
     public void setArticle(Article article) {
+        log.fine("Set article to view [" + (article == null ? "null" : article.getSource()) + "]");
         if (article != null) {
             StringBuilder html = new StringBuilder();
             html.append("<html>");

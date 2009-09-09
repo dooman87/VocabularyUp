@@ -56,8 +56,9 @@ public class Vocabulary {
                     log.log(Level.SEVERE, "Error loading article", e);
                 }
             }
+            log.log(Level.INFO, "Loaded [" + articles.size() + "] articles for vocabulary [" + getName() + "]");
         } catch (DomCheckingException e) {
-            log.log(Level.INFO, "No articles in vocabulary");
+            log.log(Level.WARNING, "No articles in vocabulary [" + getName() + "]");
         }
     }
 
