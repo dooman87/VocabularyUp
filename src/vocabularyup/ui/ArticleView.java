@@ -22,6 +22,8 @@ public class ArticleView extends JTextPane {
         if (article != null) {
             StringBuilder html = new StringBuilder();
             html.append("<html>");
+            html.append("<head></head>");
+            html.append("<body>");
             html.append("<h1>");
             html.append(article.getSource());
             html.append("</h1>");
@@ -41,12 +43,21 @@ public class ArticleView extends JTextPane {
                 html.append("</b></li>");
             }
             html.append("</ul>");
-            html.append("</ul>");
+            html.append("</body>");
             html.append("</html>");
 
             setText(html.toString());
         } else {
-            setText("");
+            StringBuilder html = new StringBuilder();
+            html.append("<html>");
+            html.append("<head></head>");
+            html.append("<body>");
+            html.append("No selected articles");
+            html.append("</body>");
+            html.append("</html>");
+            setText(html.toString());
         }
+
+        log.finest("Set text to:\n" + getText());
     }
 }

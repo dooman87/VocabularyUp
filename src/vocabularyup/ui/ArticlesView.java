@@ -2,8 +2,8 @@ package vocabularyup.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.JTable;
-import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import vocabularyup.VocabularyApp;
 import vocabularyup.VocabularyAppAdapter;
@@ -15,6 +15,8 @@ import vocabularyup.model.xml.Article;
  * @author dooman
  */
 public class ArticlesView extends JTable {
+    private static final Logger log = Logger.getLogger(ArticlesView.class.getName());
+
     public static class ArticleView {
         private Article article;
 
@@ -45,14 +47,17 @@ public class ArticlesView extends JTable {
             });
         }
 
+        @Override
         public int getColumnCount() {
             return 1;
         }
 
+        @Override
         public int getRowCount() {
             return searchResults.size();
         }
 
+        @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             return searchResults.get(rowIndex);
         }
@@ -63,6 +68,10 @@ public class ArticlesView extends JTable {
                 addSearchResult(a);
             }
             fireTableDataChanged();
+            if (newSearchResults.size() > 0) {
+                log.fine("Set select in articles view to [0]");
+                changeSelection(0, 0, false, false);
+            }
         }
 
         public void addSearchResult(Article searchResult) {
