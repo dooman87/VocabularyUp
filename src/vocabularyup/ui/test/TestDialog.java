@@ -65,6 +65,8 @@ public class TestDialog extends JDialog {
         this.timeLabel = new JLabel();
         nextButton = new JButton(new NextAction());
         initUI();
+
+        setModal(true);
     }
 
     protected void initUI() {
@@ -77,6 +79,7 @@ public class TestDialog extends JDialog {
         mainPanel.add(new CreateTestPanel());
 
         mainPanel.add(Box.createVerticalGlue());
+        mainPanel.add(Box.createVerticalStrut(5));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
