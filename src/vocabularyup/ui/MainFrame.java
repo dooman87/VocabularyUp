@@ -25,8 +25,12 @@ import javax.swing.KeyStroke;
 import vocabularyup.VocabularyApp;
 import vocabularyup.exception.VocabularyAlreadyExistException;
 import vocabularyup.exception.VocabularyModelException;
+import vocabularyup.model.xml.Vocabulary;
+import vocabularyup.test.VocabularyTest;
+import vocabularyup.ui.test.CreateTestPanel;
 import vocabularyup.ui.test.TestController;
 import vocabularyup.ui.test.TestDialog;
+import vocabularyup.ui.test.TestWordPanel;
 
 /**
  *
@@ -72,11 +76,22 @@ public class MainFrame extends JFrame {
     public static class TestAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             TestDialog dialog = new TestDialog(new TestController() {
-
+                VocabularyTest test;
                 public Component getNext(int step, Component current) {
-                    JPanel panel = new JPanel();
-                    panel.add(new JLabel("Step " + step));
-                    return panel;
+                    if (step == 0) {
+                        log.fine("Get settings for test.");
+                        CreateTestPanel panel = (CreateTestPanel) current;
+                        int wordCount = panel.getWordCount();
+                        Vocabulary voc = panel.getVocabulary();
+                        //test = new VocabularyTest(voc, wordCount);
+                        //test.start();
+                    }
+                    //test.getWord();
+                    //TODO:
+                    //JPanel panel = new JPanel();
+                    //panel.add(new JLabel("Step " + step));
+                    //return panel;
+                    return new TestWordPanel("Hello");
                 }
             });
             dialog.setLocationRelativeTo(null);
