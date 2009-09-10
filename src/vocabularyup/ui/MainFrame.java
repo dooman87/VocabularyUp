@@ -68,6 +68,8 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             AddArticleDialog dialog = new AddArticleDialog(null);
             dialog.setModal(true);
+            dialog.setLocationRelativeTo(null);
+            dialog.setLocationByPlatform(true);
             dialog.pack();
             dialog.setVisible(true);
         }
