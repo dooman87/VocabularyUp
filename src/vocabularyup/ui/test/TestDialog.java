@@ -60,7 +60,7 @@ public class TestDialog extends JDialog {
 
     public TestDialog(TestController controller) {
         this.controller = controller;
-        this.currentStep = 0;
+        this.currentStep = -1;
         this.mainPanel = new JPanel();
         this.timeLabel = new JLabel();
         nextButton = new JButton(new NextAction());
@@ -93,10 +93,16 @@ public class TestDialog extends JDialog {
     synchronized private void setNextWord() {
         Component currentComponent = TestDialog.this.mainPanel.getComponent(1);
         mainPanel.remove(currentComponent);
-        mainPanel.add(controller.getNext(++currentStep, currentComponent), 1);
-        mainPanel.validate();
-        TimerTask task = new TimerTask();
-        nextButton.addActionListener(task);
-        task.execute();
+        Component wordComponent = controller.getNext(++currentStep, currentComponent);
+        if (wordComponent != null) {
+            mainPanel.add(wordComponent, 1);
+            mainPanel.validate();
+            TimerTask task = new TimerTask();
+            nextButton.addActionListener(task);
+            task.execute();
+        } else {
+            setVisible(false);
+            dispose();
+        }
     }
 }

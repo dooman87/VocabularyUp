@@ -78,22 +78,27 @@ public class MainFrame extends JFrame {
     public static class TestAction extends AbstractAction {
         public void actionPerformed(ActionEvent e) {
             TestDialog dialog = new TestDialog(new TestController() {
-                VocabularyTest test;
+                private VocabularyTest test;
+                private int wordCount;
+
                 public Component getNext(int step, Component current) {
                     if (step == 0) {
                         log.fine("Get settings for test.");
                         CreateTestPanel panel = (CreateTestPanel) current;
-                        int wordCount = panel.getWordCount();
+                        this.wordCount = panel.getWordCount();
                         Vocabulary voc = panel.getVocabulary();
-                        //test = new VocabularyTest(voc, wordCount);
-                        //test.start();
+                        test = new VocabularyTest(voc, wordCount);
+                        test.start();
+                    } else {
+                        TestWordPanel wordPanel = (TestWordPanel) current;
+                        test.setAnswer(wordPanel.getAnswer());
                     }
-                    //test.getWord();
-                    //TODO:
-                    //JPanel panel = new JPanel();
-                    //panel.add(new JLabel("Step " + step));
-                    //return panel;
-                    return new TestWordPanel("Hello");
+                    if (step >= wordCount) { //end
+                        test.end();
+                        return null;
+                    } else {
+                        return new TestWordPanel(test.getWord());
+                    }                    
                 }
             });
             dialog.setLocationRelativeTo(null);

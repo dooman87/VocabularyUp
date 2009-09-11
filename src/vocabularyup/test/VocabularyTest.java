@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 import vocabularyup.model.xml.Article;
 import vocabularyup.model.xml.Vocabulary;
 
@@ -22,6 +23,8 @@ import vocabularyup.model.xml.Vocabulary;
  * @author dooman
  */
 public class VocabularyTest {
+    private static final Logger log = Logger.getLogger(VocabularyTest.class.getName());
+
     private Vocabulary vocabulary;
     private int wordCount;
     private List<Article> testArticles;
@@ -35,12 +38,14 @@ public class VocabularyTest {
         this.vocabulary = vocabulary;
         this.wordCount = wordCount;
         testArticles = new ArrayList<Article>();
+        log.fine("Create new test vocabulary=[" + vocabulary.getName() + "], wordCount=[" + wordCount + "]");
     }
 
     /**
      * Start test. Prepare words.
      */
     public void start() {
+        log.fine("Start test.");
         testArticles = new LinkedList<Article>();
         answers = new HashMap<Article, String>();
         prepareWords();
@@ -60,10 +65,13 @@ public class VocabularyTest {
             throw new IllegalStateException("No more word for test.");
         }
 
+        testArticles.remove(currentArticle);
+
         Random rand = new Random(System.currentTimeMillis());
         int wordIndex = rand.nextInt(testArticles.size());
 
         currentArticle = testArticles.get(wordIndex);
+        log.fine("Get next article from test [" + currentArticle.getSource() + "]");
         return currentArticle.getSource();
     }
 
@@ -72,6 +80,7 @@ public class VocabularyTest {
      * @param answer user's answer.
      */
     public void setAnswer(String answer) {
+        log.fine("Set answer [" + answer + "]");
         answers.put(currentArticle, answer);
     }
 
@@ -80,6 +89,7 @@ public class VocabularyTest {
      * @return List of result for each word.
      */
     public List<VocabularyTestResult> end() {
+        log.fine("End test, creating result");
         List<VocabularyTestResult> results = new LinkedList<VocabularyTestResult>();
         for (Map.Entry<Article, String> answer : answers.entrySet())  {
             results.add(new VocabularyTestResult(answer.getKey(), answer.getValue()));
