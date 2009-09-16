@@ -70,7 +70,6 @@ public class AddArticleDialog extends JDialog {
      */
     protected boolean validateDialog() {
         return !sourceEdit.getText().isEmpty() &&
-                            !translateEdit.getText().isEmpty() &&
                             vocabulariesEdit.getSelectedItem() != null;
     }
 
