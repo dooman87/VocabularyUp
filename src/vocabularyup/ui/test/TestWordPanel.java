@@ -47,4 +47,9 @@ public class TestWordPanel extends JPanel {
     public String getAnswer() {
         return answer.getText();
     }
+
+    @Override
+    public void requestFocus() {
+        answer.requestFocus();
+    }
 }

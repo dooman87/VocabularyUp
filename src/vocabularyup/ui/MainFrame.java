@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -27,6 +28,7 @@ import vocabularyup.exception.VocabularyAlreadyExistException;
 import vocabularyup.exception.VocabularyModelException;
 import vocabularyup.model.xml.Vocabulary;
 import vocabularyup.test.VocabularyTest;
+import vocabularyup.test.VocabularyTestResult;
 import vocabularyup.ui.test.CreateTestPanel;
 import vocabularyup.ui.test.TestController;
 import vocabularyup.ui.test.TestDialog;
@@ -76,30 +78,51 @@ public class MainFrame extends JFrame {
     }
 
     public static class TestAction extends AbstractAction {
+        @Override
         public void actionPerformed(ActionEvent e) {
             TestDialog dialog = new TestDialog(new TestController() {
                 private VocabularyTest test;
+                private List<VocabularyTestResult> result;
+                private int timeForWord;
                 private int wordCount;
 
+                @Override
                 public Component getNext(int step, Component current) {
                     if (step == 0) {
                         log.fine("Get settings for test.");
                         CreateTestPanel panel = (CreateTestPanel) current;
+                        this.timeForWord = panel.getTimeForWord();
                         this.wordCount = panel.getWordCount();
-                        Vocabulary voc = panel.getVocabulary();
-                        test = new VocabularyTest(voc, wordCount);
+                        test = new VocabularyTest(panel.getVocabulary(), wordCount);
                         test.start();
                     } else {
                         TestWordPanel wordPanel = (TestWordPanel) current;
                         test.setAnswer(wordPanel.getAnswer());
                     }
-                    if (step >= wordCount) { //end
-                        test.end();
-                        return null;
-                    } else {
+                    if (test.hasMoreWords()) {
                         return new TestWordPanel(test.getWord());
-                    }                    
+                    } else {
+                        result = test.end();
+                        return null;
+                    }
                 }
+
+                @Override
+                public int getTimeForWord() {
+                    return timeForWord;
+                }
+
+                @Override
+                public int getWordCount() {
+                    return wordCount;
+                }
+
+                @Override
+                public List<VocabularyTestResult> getResult() throws IllegalStateException {
+                    return result;
+                }
+
+
             });
             dialog.setLocationRelativeTo(null);
             dialog.setLocationByPlatform(true);

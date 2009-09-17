@@ -65,12 +65,12 @@ public class VocabularyTest {
             throw new IllegalStateException("No more word for test.");
         }
 
-        testArticles.remove(currentArticle);
-
         Random rand = new Random(System.currentTimeMillis());
         int wordIndex = rand.nextInt(testArticles.size());
 
         currentArticle = testArticles.get(wordIndex);
+        testArticles.remove(currentArticle);
+
         log.fine("Get next article from test [" + currentArticle.getSource() + "]");
         return currentArticle.getSource();
     }
@@ -103,6 +103,14 @@ public class VocabularyTest {
     }
 
     /**
+     * Has more words in test or not.
+     * @return {@code true} if test has words and {@code != null}, else {@code false}.
+     */
+    public boolean hasMoreWords() {
+        return testArticles != null && testArticles.size() != 0;
+    }
+
+    /**
      * Call before test begins.<br/>
      * Prepare words for testing.<br/>
      * Select words with minimum ratings, if need add other words.
@@ -131,6 +139,7 @@ public class VocabularyTest {
         while (testArticles.size() < wordCount && allSortedArticleIt.hasNext()) {
             testArticles.add(allSortedArticleIt.next());
         }
+        log.fine("Add [" + testArticles.size() + "] to test");
     }
 
 }

@@ -44,6 +44,14 @@ public class CreateTestPanel extends JPanel {
         return ((Number) wordCount.getValue()).intValue();
     }
 
+    /**
+     * Return number of seconds for one word.
+     * @return integer in range [10, 90]
+     */
+    public int getTimeForWord() {
+        return ((Number)timeForWord.getValue()).intValue();
+    }
+
     protected void initUI() {
         GridBagHelper grid = new GridBagHelper(this);
         grid.addLabelComponent(new JLabel("Vocabulary"));

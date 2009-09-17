@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -25,7 +26,7 @@ public class TestDialog extends JDialog {
 
         @Override
         protected Object doInBackground() throws Exception {
-            for (int i = 20; i > 0 && !buttonClicked; i--) { //countdown
+            for (int i = controller.getTimeForWord(); i > 0 && !buttonClicked; i--) { //countdown
                 timeLabel.setText("00:" + (i < 10 ? "0" : "") + i);
                 Thread.sleep(1000);
             }
@@ -36,6 +37,7 @@ public class TestDialog extends JDialog {
             return null;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             buttonClicked = true;
         }
@@ -45,10 +47,25 @@ public class TestDialog extends JDialog {
         
         public NextAction() {
             putValue(Action.NAME, "Next >>>");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_ENTER);
+            putValue(Action.SHORT_DESCRIPTION, "Alt+Enter");
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             setNextWord();
+        }
+    }
+
+    private class FinishAction extends AbstractAction {
+        public FinishAction() {
+            putValue(Action.NAME, "Finish");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            TestDialog.this.setVisible(false);
+            TestDialog.this.dispose();
         }
     }
 
@@ -70,6 +87,8 @@ public class TestDialog extends JDialog {
     }
 
     protected void initUI() {
+        setTitle("Test");
+
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         JPanel timePanel = new JPanel(new BorderLayout());
@@ -97,12 +116,16 @@ public class TestDialog extends JDialog {
         if (wordComponent != null) {
             mainPanel.add(wordComponent, 1);
             mainPanel.validate();
+            wordComponent.requestFocus();
             TimerTask task = new TimerTask();
             nextButton.addActionListener(task);
             task.execute();
         } else {
             setVisible(false);
             dispose();
+            TestResultDialog resultDialog = new TestResultDialog(controller.getResult());
+            resultDialog.pack();
+            resultDialog.setVisible(true);
         }
     }
 }

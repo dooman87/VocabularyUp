@@ -3,7 +3,7 @@ package vocabularyup.test;
 import vocabularyup.model.xml.Article;
 
 /**
- * Result for word in test.
+ * Result for one word in test.
  * @author dooman
  */
 public class VocabularyTestResult {

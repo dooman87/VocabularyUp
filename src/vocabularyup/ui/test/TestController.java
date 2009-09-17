@@ -6,6 +6,8 @@
 package vocabularyup.ui.test;
 
 import java.awt.Component;
+import java.util.List;
+import vocabularyup.test.VocabularyTestResult;
 
 /**
  *
@@ -19,4 +21,23 @@ public interface TestController {
      * @return new component for next step.
      */
     Component getNext(int step, Component current);
+
+    /**
+     * Return number of words.
+     * @return number of words in current test.
+     */
+    int getWordCount();
+
+    /**
+     * Return list of results for the test.
+     * @return List of result.
+     * @throws IllegalStateException if test doesn't end.
+     */
+    List<VocabularyTestResult> getResult() throws IllegalStateException;
+
+    /**
+     * Return number of seconds for one word.
+     * @return number of seconds for one word.
+     */
+    int getTimeForWord();
 }
