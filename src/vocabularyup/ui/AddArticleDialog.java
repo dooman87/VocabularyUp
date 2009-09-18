@@ -78,7 +78,7 @@ public class AddArticleDialog extends JDialog {
         JPanel rootPanel = new JPanel();
         GridBagHelper layout = new GridBagHelper(rootPanel);
 
-        JLabel sourceLabel = new JLabel("Source:");
+        JLabel sourceLabel = new JLabel("Source(*):");
         layout.addLabelComponent(sourceLabel);
 
         layout.addFieldComponent(sourceEdit);
@@ -95,7 +95,7 @@ public class AddArticleDialog extends JDialog {
         JScrollPane examplesPane = new JScrollPane(examplesEdit);
         layout.addComponent(examplesPane, GridBagHelper.MULTIROW_FIELD_CONSTRAINT);
 
-        layout.addLabelComponent(new JLabel("Vocabulary:"));
+        layout.addLabelComponent(new JLabel("Vocabulary(*):"));
         layout.addFieldComponent(vocabulariesEdit);
 
         JPanel buttonPanel = new JPanel();
@@ -113,6 +113,7 @@ public class AddArticleDialog extends JDialog {
     private void init() {
         vocabulariesEdit.setSelectedItem(VocabularyApp.getInstance().getCurrentVocabulary());
         vocabulariesEdit.addItemListener(new ItemListener() {
+            @Override
             public void itemStateChanged(ItemEvent e) {
                 try {
                     VocabularyApp.getInstance().setCurrentVocabulary((Vocabulary) e.getItem());
@@ -125,6 +126,7 @@ public class AddArticleDialog extends JDialog {
         cancelButton.setMnemonic(KeyEvent.VK_C);
         okButton.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (validateDialog()) {
                     //Vocabulary v = (Vocabulary) vocabulariesEdit.getSelectedItem();
@@ -149,13 +151,14 @@ public class AddArticleDialog extends JDialog {
                     AddArticleDialog.this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(AddArticleDialog.this, 
-                            "Please, fill source, translate fields and select vocabulary", 
+                            "Please, fill source and select vocabulary",
                             "Add article error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
         cancelButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 AddArticleDialog.this.dispose();
             }
