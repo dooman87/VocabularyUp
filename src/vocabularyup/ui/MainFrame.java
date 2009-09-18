@@ -16,17 +16,14 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import vocabularyup.VocabularyApp;
 import vocabularyup.exception.VocabularyAlreadyExistException;
 import vocabularyup.exception.VocabularyModelException;
-import vocabularyup.model.xml.Vocabulary;
 import vocabularyup.test.VocabularyTest;
 import vocabularyup.test.VocabularyTestResult;
 import vocabularyup.ui.test.CreateTestPanel;
@@ -42,6 +39,7 @@ public class MainFrame extends JFrame {
     private static final Logger log = Logger.getLogger(MainFrame.class.getName());
 
     public static class CreateVocabularyAction extends AbstractAction {
+        @Override
         public void actionPerformed(ActionEvent e) {
             String vocabularyName = JOptionPane.showInputDialog("Enter name of new vocabulary:");
 
@@ -61,12 +59,14 @@ public class MainFrame extends JFrame {
 
     public static class ExitAction extends AbstractAction {
         
+        @Override
         public void actionPerformed(ActionEvent e) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
 
     public static class AddWordAction extends AbstractAction {
+        @Override
         public void actionPerformed(ActionEvent e) {
             AddArticleDialog dialog = new AddArticleDialog(null);
             dialog.setModal(true);
@@ -75,6 +75,14 @@ public class MainFrame extends JFrame {
             dialog.pack();
             dialog.setVisible(true);
         }
+    }
+
+    public static class EditWordAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
     }
 
     public static class TestAction extends AbstractAction {

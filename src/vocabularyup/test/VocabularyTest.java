@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import vocabularyup.exception.VocabularyModelException;
 import vocabularyup.model.xml.Article;
 import vocabularyup.model.xml.Vocabulary;
 
@@ -20,6 +22,7 @@ import vocabularyup.model.xml.Vocabulary;
  * To get word, call method {@code getWord()}. When user answer, you must call {@code setAnswer()}.
  * 
  * //TODO: need statistics
+ * //TODO: Don't get words without translate for test.
  * @author dooman
  */
 public class VocabularyTest {
@@ -99,6 +102,20 @@ public class VocabularyTest {
         answers.clear();
         answers = null;
 
+        for (VocabularyTestResult r : results) {
+            Article article = r.getArticle();
+            Integer rating = Integer.valueOf(article.getRating());
+            r.getArticle().setRating(String.valueOf(rating + (r.isResult() ? 1 : -1)));
+            log.fine("Set new rating to article [" + article.getSource() +
+                    "], new: [" + article.getRating() + "] old: [" + rating + "]");
+        }
+
+        try {
+            vocabulary.save();
+        } catch (VocabularyModelException e) {
+            log.log(Level.SEVERE, "Error saving test results", e);
+        }
+
         return results;
     }
 
@@ -121,6 +138,10 @@ public class VocabularyTest {
 
         //sort all articles by rating
         for (Article a : articles) {
+            if (a.getTranslates() == null || a.getTranslates().size() == 0) {
+                log.info("Article [" + a.getSource() + "] hasn't translate and won't add to test.");
+                continue;
+            }
             Integer rating = a.getRating().isEmpty() ? 0 : Integer.valueOf(a.getRating());
             List<Article> ratingArticles = ratingMap.get(rating);
             if (ratingArticles == null) {
@@ -139,7 +160,7 @@ public class VocabularyTest {
         while (testArticles.size() < wordCount && allSortedArticleIt.hasNext()) {
             testArticles.add(allSortedArticleIt.next());
         }
-        log.fine("Add [" + testArticles.size() + "] to test");
+        log.fine("Add [" + testArticles.size() + "] words to test");
     }
 
 }

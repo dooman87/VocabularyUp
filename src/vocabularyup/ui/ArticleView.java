@@ -43,6 +43,9 @@ public class ArticleView extends JTextPane {
                 html.append("</b></li>");
             }
             html.append("</ul>");
+            html.append("<h2>");
+            html.append("Rating:").append(article.getRating());
+            html.append("</h2>");
             html.append("</body>");
             html.append("</html>");
 

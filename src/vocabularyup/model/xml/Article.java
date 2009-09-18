@@ -111,10 +111,13 @@ public class Article {
         try {
             List<Element> translatesEl = DomCheckHelper.getElementsByTagName(translatesElement, ARTICLE_TRANSLATE_ELEMENT, 0, false);
             for (Element el : translatesEl) {
-                result.add(el.getTextContent());
+                String content = el.getTextContent();
+                if (!content.isEmpty()) {
+                    result.add(content);
+                }
             }
         } catch (DomCheckingException e) {
-            log.log(Level.WARNING, "No translates in article");
+            log.log(Level.WARNING, "No translates in article", e);
         }
 
         return result;
@@ -167,7 +170,8 @@ public class Article {
     }
 
     public String getRating() {
-        return ratingElement.getTextContent();
+        String content = ratingElement.getTextContent();
+        return (content == null || content.isEmpty()) ? "0" : content;
     }
 
     /**
