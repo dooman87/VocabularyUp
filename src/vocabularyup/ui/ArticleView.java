@@ -24,9 +24,9 @@ public class ArticleView extends JTextPane {
             html.append("<html>");
             html.append("<head></head>");
             html.append("<body>");
-            html.append("<h1>");
+            html.append("<h1><u>");
             html.append(article.getSource());
-            html.append("</h1>");
+            html.append("</u></h1>");
 
             html.append("<ul>");
             for (String translate : article.getTranslates()) {
@@ -43,8 +43,9 @@ public class ArticleView extends JTextPane {
                 html.append("</b></li>");
             }
             html.append("</ul>");
-            html.append("<h2>");
-            html.append("Rating:").append(article.getRating());
+            String color = Integer.valueOf(article.getRating()) < 0 ? "#FF0000" : "#F0FFFF";
+            html.append("<h2 style=\"text-align:right;background-color:").append(color).append(";\">");
+            html.append("Rating: ").append(article.getRating());
             html.append("</h2>");
             html.append("</body>");
             html.append("</html>");
