@@ -17,23 +17,27 @@ import vocabularyup.VocabularyAppEvent;
  */
 public class VocabulariesView extends JTable {
     public static class VocabulariesModel extends AbstractTableModel {
-            public int getRowCount() {
-                return VocabularyApp.getInstance().getVocabularies().size();
-            }
+        @Override
+        public int getRowCount() {
+            return VocabularyApp.getInstance().getVocabularies().size();
+        }
 
-            public int getColumnCount() {
-                return 1;
-            }
+        @Override
+        public int getColumnCount() {
+            return 1;
+        }
 
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                return VocabularyApp.getInstance().getVocabularies().get(rowIndex).getName();
-            }
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            return VocabularyApp.getInstance().getVocabularies().get(rowIndex).getName();
+        }
     }
 
     private VocabulariesModel model = new VocabulariesModel();
 
     public VocabulariesView() {
         setModel(model);
+        getTableHeader().setVisible(false);
         VocabularyApp.getInstance().addListener(new VocabularyAppAdapter(){
             @Override
             public void addedVocabulary(VocabularyAppEvent event) {

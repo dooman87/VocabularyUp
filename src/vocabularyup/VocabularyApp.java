@@ -19,7 +19,7 @@ import vocabularyup.exception.VocabularyModelException;
 import vocabularyup.exception.VocabularyNotFoundException;
 import vocabularyup.model.xml.Article;
 import vocabularyup.model.xml.Vocabulary;
-import vocabularyup.ui.AddArticleDialog;
+import vocabularyup.ui.EditArticleDialog;
 import vocabularyup.ui.MainFrame;
 
 /**
@@ -105,8 +105,23 @@ public class VocabularyApp {
      */
     public void addArticle(String source, List<String> translates, List<String> examples) throws VocabularyModelException {
         if (currentVocabulary != null) {
-            currentVocabulary.addArticle(source, translates, examples);
+            try {
+                currentVocabulary.addArticle(source, translates, examples);
+                currentVocabulary.save();
+                setCurrentVocabulary(currentVocabulary);
+            } catch (Exception ex) {
+                log.log(Level.SEVERE, "Cann't add article", ex);
+            }
+        }
+    }
+
+    public void changeArticle(Article old, String source, List<String> translates, List<String> examples) throws VocabularyModelException {
+        if (currentVocabulary != null) {
+            old.setSource(source);
+            old.setTranslates(translates);
+            old.setExamples(examples);
             currentVocabulary.save();
+            fireSelectedArticleChange(old);
         }
     }
 
@@ -233,7 +248,7 @@ public class VocabularyApp {
         if (args.length == 1 &&
                 args[0].equals(ADD_ARTICLE_APP_OPTION)) {
             //add words only
-            AddArticleDialog dialog = new AddArticleDialog(null);
+            EditArticleDialog dialog = new EditArticleDialog(null);
             dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             dialog.addWindowListener(new WindowAdapter() {
                 @Override

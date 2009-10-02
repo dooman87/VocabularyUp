@@ -22,7 +22,6 @@ import vocabularyup.model.xml.Vocabulary;
  * To get word, call method {@code getWord()}. When user answer, you must call {@code setAnswer()}.
  * 
  * //TODO: need statistics
- * //TODO: Don't get words without translate for test.
  * @author dooman
  */
 public class VocabularyTest {

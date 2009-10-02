@@ -27,11 +27,9 @@ import vocabularyup.util.dom.DomCheckHelper;
 import vocabularyup.util.dom.DomCheckingException;
 
 /**
- * Словарь, содержит в себе все статьи. Отвечает за связку c DOM'ом.<br/>
- * Может быть создан двумя способами:<br/>
- *   --Создание нового словаря.<br/>
- *   --Загрузка существующего словаря.
- * TODO: сделать интерфейс, фабрику...
+ * Vocabulary contains articles. Class realize DOM model for storing data.
+ *
+ * TODO: create interface and factory for different implementations.
  * @author 111
  */
 public class Vocabulary {
@@ -72,7 +70,7 @@ public class Vocabulary {
 
     /**
      * Save vocabulary to file. Delete old file and create new, write DOM structure after creating.
-     * @throws vocabularyup.exception.vocabulary.VocabularyModelException Error transformation DOM to File.
+     * @throws vocabularyup.exception.VocabularyModelException Error transformation DOM to File.
      */
     public void save() throws VocabularyModelException {
         String fileName = VocabularyApp.APP_HOME_DIR + "/" + getName() + ".xml";
@@ -163,10 +161,10 @@ public class Vocabulary {
 
     /**
      * Load vocabulary with name - {@code name}.
-     * @param name name of the loading vocabulary
+     * @param file Source file.
      * @return loaded vocabulary
-     * @throws vocabularyup.exception.vocabulary.VocabularyNotFoundException vocabulary with name - {@code name} doesnot exist.
-     * @throws vocabularyup.exception.vocabulary.VocabularyModelException parse error
+     * @throws vocabularyup.exception.VocabularyNotFoundException vocabulary with name - {@code name} doesnot exist.
+     * @throws vocabularyup.exception.VocabularyModelException parse error
      */
     public static Vocabulary loadVocabulary(File file)
     throws VocabularyNotFoundException, VocabularyModelException {
@@ -193,4 +191,6 @@ public class Vocabulary {
         }
         return vocabulary;
     }
+
+
 }

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package vocabularyup.ui;
 
@@ -24,6 +20,7 @@ import javax.swing.KeyStroke;
 import vocabularyup.VocabularyApp;
 import vocabularyup.exception.VocabularyAlreadyExistException;
 import vocabularyup.exception.VocabularyModelException;
+import vocabularyup.model.xml.Article;
 import vocabularyup.test.VocabularyTest;
 import vocabularyup.test.VocabularyTestResult;
 import vocabularyup.ui.test.CreateTestPanel;
@@ -33,7 +30,7 @@ import vocabularyup.ui.test.TestWordPanel;
 
 /**
  *
- * @author 111
+ * @author dooman87
  */
 public class MainFrame extends JFrame {
     private static final Logger log = Logger.getLogger(MainFrame.class.getName());
@@ -68,12 +65,27 @@ public class MainFrame extends JFrame {
     public static class AddWordAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            AddArticleDialog dialog = new AddArticleDialog(null);
+            EditArticleDialog dialog = new EditArticleDialog();
             dialog.setModal(true);
             dialog.setLocationRelativeTo(null);
             dialog.setLocationByPlatform(true);
             dialog.pack();
             dialog.setVisible(true);
+        }
+    }
+
+    public static class ChangeWordAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Article currentArticle = VocabularyApp.getInstance().getSelectedArticle();
+            if (currentArticle != null) {
+                EditArticleDialog dialog = new EditArticleDialog(currentArticle);
+                dialog.setModal(true);
+                dialog.setLocationRelativeTo(null);
+                dialog.setLocationByPlatform(true);
+                dialog.pack();
+                dialog.setVisible(true);
+            }
         }
     }
 
@@ -143,6 +155,7 @@ public class MainFrame extends JFrame {
     private final CreateVocabularyAction createAction = new CreateVocabularyAction();
     private final ExitAction exitAction = new ExitAction();
     private final AddWordAction addWordAction = new AddWordAction();
+    private final ChangeWordAction changeWordAction = new ChangeWordAction();
     private final TestAction testAction = new TestAction();
 
     public MainFrame() {
@@ -165,8 +178,11 @@ public class MainFrame extends JFrame {
 
         JMenu editMenu = new JMenu("Edit");
         prepareAction("Add word...", addWordAction, KeyEvent.VK_A, "Add new word");
+        prepareAction("Edit word...", changeWordAction, KeyEvent.VK_C, "Change current word");
         prepareAction("Test...", testAction, KeyEvent.VK_T, "Pass test");
         editMenu.add(addWordAction);
+        editMenu.add(changeWordAction);
+        editMenu.addSeparator();
         editMenu.add(testAction);
 
         menuBar.add(fileMenu);
@@ -182,9 +198,10 @@ public class MainFrame extends JFrame {
     private void createMainView() {
        JSplitPane split = new JSplitPane();
 
-       split.setLeftComponent(new NavigationPanel());
+       NavigationPanel p = new NavigationPanel();
+       split.setLeftComponent(p);
        split.setRightComponent(new ArticlePanel());
-       split.setResizeWeight(0.2);
+       split.setResizeWeight(0.1);
        add(split);
     }
 

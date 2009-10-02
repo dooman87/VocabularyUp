@@ -87,5 +87,6 @@ public class ArticlesView extends JTable {
 
     public ArticlesView() {
         setModel(model);
+        getTableHeader().setVisible(false);
     }
 }

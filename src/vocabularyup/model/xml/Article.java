@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import vocabularyup.exception.ArticleModelException;
 import vocabularyup.util.dom.DomCheckHelper;
 import vocabularyup.util.dom.DomCheckingException;
+import vocabularyup.util.dom.DomHelper;
 
 /**
  * Class describes word in vocabulary and it's translation.
@@ -91,6 +92,13 @@ public class Article {
         return sourceElement.getTextContent();
     }
 
+    public void setSource(String newSource) {
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Set new source for [" + getSource() + "]: " + newSource);
+        }
+        sourceElement.setTextContent(newSource);
+    }
+
     public void addTranslates(List<String> translates) {
         for (String t : translates) {
             addTranslate(t);
@@ -100,6 +108,9 @@ public class Article {
     public void addTranslate(String translate) {
         if (translatesElement == null) {
             translatesElement = document.createElement(ARTICLE_TRANSLATES_ELEMENT);
+        }
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Add new translate for [" + getSource() + "]: [" + translate + "]");
         }
         Element newTranslateEl = document.createElement(ARTICLE_TRANSLATE_ELEMENT);
         newTranslateEl.setTextContent(translate);
@@ -123,6 +134,16 @@ public class Article {
         return result;
     }
 
+    public void setTranslates(List<String> newTranslates) {
+        if (translatesElement != null) {
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Remove all translates from [" + getSource() + "]");
+            }
+            DomHelper.removeChildren(translatesElement);
+        }
+        addTranslates(newTranslates);
+    }
+
     /**
      * Add example with this word.
      * @param example example that should be added to this word.
@@ -130,6 +151,9 @@ public class Article {
     public void addExample(String example) {
         if (examplesElement == null) {
             examplesElement = document.createElement(ARTICLE_EXAMPLES_ELEMENT);
+        }
+        if (log.isLoggable(Level.FINE)) {
+            log.fine("Add new example for word [" + getSource() + "]: [" + example + "]");
         }
         Element el = document.createElement(ARTICLE_EXAMPLE_ELEMENT);
         el.setTextContent(example);
@@ -159,6 +183,16 @@ public class Article {
         }
 
         return result;
+    }
+
+    public void setExamples(List<String> newExamples) {
+        if (examplesElement != null) {
+            if (log.isLoggable(Level.FINE)) {
+                log.fine("Remove all examples from [" + sourceElement.getTextContent() + "]");
+            }
+            DomHelper.removeChildren(examplesElement);
+        }
+        addExamples(newExamples);
     }
 
     /**
@@ -198,5 +232,12 @@ public class Article {
         } catch(DomCheckingException e) {
             throw new ArticleModelException("Error building DOM model", e);
         }
-    }    
+    }
+
+    @Override
+    public String toString() {
+        return getSource();
+    }
+
+
 }

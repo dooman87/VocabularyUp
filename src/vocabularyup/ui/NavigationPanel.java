@@ -1,9 +1,11 @@
 package vocabularyup.ui;
 
+import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -31,9 +33,16 @@ public class NavigationPanel extends JPanel {
     private void initUI() {
        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
        JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-       split.setLeftComponent(vocabulariesView);
+
+       JScrollPane leftComonent = new JScrollPane(vocabulariesView);
+       Dimension leftComponentSize = leftComonent.getPreferredSize();
+       leftComponentSize.width = 200;
+       leftComonent.setPreferredSize(leftComponentSize);
+       split.setLeftComponent(leftComonent);
+
        vocabulariesView.getSelectionModel().addListSelectionListener(
        new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (e.getValueIsAdjusting()) {
                     return;
@@ -51,8 +60,15 @@ public class NavigationPanel extends JPanel {
             }
        }
        );
-       split.setRightComponent(articlesView);
+
+       JScrollPane rightComponent = new JScrollPane(articlesView);
+       Dimension rightComponentSize = rightComponent.getPreferredSize();
+       rightComponentSize.width = 200;
+       rightComponent.setPreferredSize(rightComponentSize);
+       //split.setRightComponent(new JScrollPane(articlesView));
+       split.setRightComponent(rightComponent);
        articlesView.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (e.getValueIsAdjusting()) {
                     return;
@@ -67,5 +83,8 @@ public class NavigationPanel extends JPanel {
         });
        split.setResizeWeight(0.4);
        add(split);
+
+       //split.setMaximumSize(new Dimension(200, split.getMaximumSize().height));
+       //setMaximumSize(new Dimension(200, getMaximumSize().height));
     }
 }
