@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import vocabularyup.exception.ArticleAlreadyExistException;
 import vocabularyup.exception.VocabularyAlreadyExistException;
 import vocabularyup.exception.VocabularyModelException;
 import vocabularyup.exception.VocabularyNotFoundException;
@@ -102,19 +103,28 @@ public class VocabularyApp {
      * @param translates translates for article.
      * @param examples examples for article.
      * @throws vocabularyup.exception.VocabularyModelException error while saving vocabulary.
+     * @throws VocabularyNotFoundException when setting vocabulary as current.
+     * @throws ArticleAlreadyExistException if article with the specified source already exists
      */
-    public void addArticle(String source, List<String> translates, List<String> examples) throws VocabularyModelException {
+    public void addArticle(String source, List<String> translates, List<String> examples)
+            throws VocabularyModelException, VocabularyNotFoundException, ArticleAlreadyExistException {
         if (currentVocabulary != null) {
-            try {
-                currentVocabulary.addArticle(source, translates, examples);
-                currentVocabulary.save();
-                setCurrentVocabulary(currentVocabulary);
-            } catch (Exception ex) {
-                log.log(Level.SEVERE, "Cann't add article", ex);
-            }
+            currentVocabulary.addArticle(source, translates, examples);
+            currentVocabulary.save();
+            setCurrentVocabulary(currentVocabulary);
+        } else {
+            throw new IllegalStateException("Current vocabulary is [null]");
         }
     }
 
+    /**
+     * Change exists article.
+     * @param old article that must be modified.
+     * @param source new source for the article.
+     * @param translates new translates for the article.
+     * @param examples new examples for the article.
+     * @throws VocabularyModelException error while saving vocabulary.
+     */
     public void changeArticle(Article old, String source, List<String> translates, List<String> examples) throws VocabularyModelException {
         if (currentVocabulary != null) {
             old.setSource(source);

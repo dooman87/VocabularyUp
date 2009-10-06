@@ -8,6 +8,10 @@
   <name>VocabularyApp</name>
   <url>http://github.com/dooman87/VocabularyUp</url>
 
+  <properties>
+    <project.license>apache20</project.license>
+  </properties>
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test</testSourceDirectory>

@@ -6,7 +6,6 @@
 package vocabularyup.ui;
 
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -30,7 +29,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import vocabularyup.VocabularyApp;
-import vocabularyup.exception.VocabularyModelException;
 import vocabularyup.exception.VocabularyNotFoundException;
 import vocabularyup.model.xml.Article;
 import vocabularyup.model.xml.Vocabulary;
@@ -41,6 +39,8 @@ import vocabularyup.util.ui.GridBagHelper;
  * @author dooman
  */
 public class EditArticleDialog extends JDialog {
+    private static final Logger log = Logger.getLogger(EditArticleDialog.class.getName());
+
     public static final String TRANSLATE_DELIMETER = ";";
     public static final String EXAMPLE_DELIMETER = "\n";
 
@@ -65,12 +65,13 @@ public class EditArticleDialog extends JDialog {
                         } else {
                             VocabularyApp.getInstance().changeArticle(article, source, translatesList, examplesList);
                         }
-                    } catch (VocabularyModelException ex) {
+                        EditArticleDialog.this.dispose();
+                    } catch (Exception ex) {
+                        log.log(Level.SEVERE, "Error add/change article", ex);
                         JOptionPane.showMessageDialog(EditArticleDialog.this,
-                            "Error occured while save vocabulary: " + ex.getMessage(),
+                            "Error occured while add/change article: " + ex.getMessage(),
                             "Add article error", JOptionPane.ERROR_MESSAGE);
                     }
-                    EditArticleDialog.this.dispose();
                 } else {
                     JOptionPane.showMessageDialog(EditArticleDialog.this,
                             "Please, fill source and select vocabulary",

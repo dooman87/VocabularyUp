@@ -20,6 +20,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import vocabularyup.VocabularyApp;
+import vocabularyup.exception.ArticleAlreadyExistException;
 import vocabularyup.exception.VocabularyAlreadyExistException;
 import vocabularyup.exception.VocabularyModelException;
 import vocabularyup.exception.VocabularyNotFoundException;
@@ -104,8 +105,12 @@ public class Vocabulary {
      * @param translates translates of new word.
      * @param examples usages of this word.
      * @return Created new article.
+     * @throws ArticleAlreadyExistException when article with the same {@code source} already exists in the vocabulary.
      */
-    public Article addArticle(String source, List<String> translates, List<String> examples) {
+    public Article addArticle(String source, List<String> translates, List<String> examples) throws ArticleAlreadyExistException {
+        if (getArticle(source) != null) {
+            throw new ArticleAlreadyExistException("Article with source [" + source + "] already exists");
+        }
         Article article = new Article(document, source, translates);
         if (examples != null && examples.size() > 0) {
             article.addExamples(examples);
@@ -123,6 +128,21 @@ public class Vocabulary {
      */
     public List<Article> getArticles() {
         return articles;
+    }
+
+    /**
+     * Return article with specified source.
+     * @param source source of article
+     * @return article or {@code null}, if article with this sourse does not exists
+     */
+    public Article getArticle(String source) {
+        for (Article a : articles) {
+            if (source.equals(a.getSource())) {
+                return a;
+            }
+        }
+
+        return null;
     }
 
     @Override
